@@ -13,4 +13,4 @@ class NotADirectoryError(FileSystemError):
     """Raised when trying to access an inode which is a file."""
 
 class IsADirectoryError(FileSystemError):
-    """Raised when trying to access an inode which is a file."""
+    """Raised when a file operation is attempted on a directory."""
