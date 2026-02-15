@@ -2,6 +2,9 @@
 
 import time
 
+import pytest
+
+from inode_fs.errors import AlreadyExistsError, NotFoundError
 from inode_fs.inode import (
     DirInode,
     FileInode,
@@ -52,3 +55,48 @@ def test_create_dir_with_defaults() -> None:
     assert dir_inode.modified_at >= before
     assert dir_inode.accessed_at >= before
     assert dir_inode.created_at == dir_inode.modified_at == dir_inode.accessed_at
+
+
+def test_dirnode_add_entry() -> None:
+    _reset_counter()
+    dir_inode_root = DirInode()
+    dir_inode_root.add_entry("home", 2)
+    assert len(dir_inode_root.entries) == 1
+    home_inode = dir_inode_root.get_entry("home")
+    assert home_inode is not None
+    assert home_inode == 2
+
+
+def test_dirnode_already_exists_error() -> None:
+    _reset_counter()
+    dir_inode_root = DirInode()
+    dir_inode_root.add_entry("home", 2)
+    with pytest.raises(AlreadyExistsError):
+        dir_inode_root.add_entry("home", 3)
+
+
+def test_dirnode_missing_name() -> None:
+    _reset_counter()
+    dir_inode_root = DirInode()
+    with pytest.raises(NotFoundError):
+        dir_inode_root.get_entry("home")
+
+
+def test_dirnode_remove_entry() -> None:
+    _reset_counter()
+    dir_inode_root = DirInode()
+    dir_inode_root.add_entry("home", 2)
+    assert len(dir_inode_root.entries) == 1
+    home_inode = dir_inode_root.get_entry("home")
+    assert home_inode is not None
+    assert home_inode == 2
+
+    dir_inode_root.remove_entry("home")
+    assert len(dir_inode_root.entries) == 0
+
+
+def test_dirnode_remove_entry_missing() -> None:
+    _reset_counter()
+    dir_inode_root = DirInode()
+    with pytest.raises(NotFoundError):
+        dir_inode_root.remove_entry("home")

@@ -3,6 +3,8 @@ from abc import ABC
 from enum import Enum, auto
 from threading import RLock
 
+from inode_fs.errors import AlreadyExistsError, NotFoundError
+
 _next_inode_id: int = 0
 _inode_lock = RLock()
 
@@ -71,3 +73,19 @@ class DirInode(Inode):
     @property
     def entry_count(self) -> int:
         return len(self.entries)
+
+    def add_entry(self, name: str, inode_id: int) -> None:
+        if name in self.entries:
+            raise AlreadyExistsError(f"[inode-fs] Path {name} already exists")
+        self.entries[name] = inode_id
+
+    def get_entry(self, name: str) -> int:
+        if name not in self.entries:
+            raise NotFoundError(f"[inode-fs] Path {name} does not exist")
+        return self.entries[name]
+
+    def remove_entry(self, name: str) -> None:
+        if name in self.entries:
+            del self.entries[name]
+            return
+        raise NotFoundError(f"[inode-fs] Path {name} does not exist")
