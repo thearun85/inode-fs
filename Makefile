@@ -15,7 +15,7 @@ typecheck:
 
 # Run pytest
 test:
-	poetry run pytest -v
+	poetry run pytest -v -s
 
 # Run all checks
 all: lint fmt typecheck test
