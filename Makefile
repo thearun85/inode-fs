@@ -6,12 +6,12 @@ lint:
 
 # Run ruff format check
 fmt:
-	peotry run ruff format inode_fs/ tests/
-	peotry run ruff check --fix inode_fs/ tests/
+	poetry run ruff format inode_fs/ tests/
+	poetry run ruff check --fix inode_fs/ tests/
 
 # Run mypy static type check
 typecheck:
-	poetry run mypy typecheck inode_fs/ tests/
+	poetry run mypy inode_fs/ tests/
 
 # Run pytest
 test:
@@ -22,6 +22,6 @@ all: lint fmt typecheck test
 
 # Clean up the project files
 clean:
-	find . -type d -name __pycache__ rm -rf {} +
-	find . -type d -name .mypy_cache rm -rf {} +
-	find . -type d -name .pytest_cache rm -rf {} +
+	find . -type d -name __pycache__ -exec rm -rf {} +
+	find . -type d -name .mypy_cache -exec rm -rf {} +
+	find . -type d -name .pytest_cache -exec rm -rf {} +
