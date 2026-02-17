@@ -13,6 +13,9 @@ class InodeTable:
         )
         self.entries[root.inode_id] = root
 
+    def get_root(self) -> Inode:
+        return self.entries.get(0)
+        
     def add(self, inode: Inode) -> None:
         """Add an inode entry to the table"""
         self.entries[inode.inode_id] = inode
