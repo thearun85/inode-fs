@@ -15,6 +15,7 @@ from inode_fs.inode import (
 
 
 def test_allocate_node_increments() -> None:
+    _reset_counter()
     inode_id1 = _allocate_inode()
     inode_id2 = _allocate_inode()
     assert inode_id1 == 0

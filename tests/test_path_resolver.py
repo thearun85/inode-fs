@@ -1,8 +1,10 @@
-from inode_fs.path_resolver import normalize, resolve
-from inode_fs.inode_table import InodeTable
-from inode_fs.inode import Inode, DirInode, FileInode, _reset_counter
-from inode_fs.errors import NotFoundError, NotADirectoryError
 import pytest
+
+from inode_fs.errors import NotADirectoryError, NotFoundError
+from inode_fs.inode import DirInode, FileInode, _reset_counter
+from inode_fs.inode_table import InodeTable
+from inode_fs.path_resolver import normalize, resolve
+
 
 class TestNormalize:
     def test_full_path(self) -> None:
@@ -11,13 +13,11 @@ class TestNormalize:
         response = normalize(path)
         assert response == "/home/file/test.txt"
 
-
     def test_ignore_current_dir(self) -> None:
         _reset_counter()
         path = "/home/./file/test.txt"
         response = normalize(path)
         assert response == "/home/file/test.txt"
-
 
     def test_parent_dir(self) -> None:
         _reset_counter()
@@ -25,13 +25,11 @@ class TestNormalize:
         response = normalize(path)
         assert response == "/file/test.txt"
 
-
     def test_past_root(self) -> None:
         _reset_counter()
         path = "../home/file/test.txt"
         response = normalize(path)
         assert response == "/home/file/test.txt"
-
 
     def test_ignore_double_slash(self) -> None:
         _reset_counter()
@@ -39,19 +37,18 @@ class TestNormalize:
         response = normalize(path)
         assert response == "/home/file/test.txt"
 
-
     def test_ignore_trailing_slash(self) -> None:
         _reset_counter()
         path = "/home/file/test.txt/"
         response = normalize(path)
         assert response == "/home/file/test.txt"
 
-
     def test_root_only(self) -> None:
         _reset_counter()
         path = "/"
         response = normalize(path)
         assert response == "/"
+
 
 class TestResolve:
     @pytest.fixture
@@ -98,11 +95,11 @@ class TestResolve:
         inode_table = get_setup
         path = "/missing"
         with pytest.raises(NotFoundError):
-            missing_node = resolve(path, inode_table)
+            resolve(path, inode_table)
 
     def test_not_a_directory(self, get_setup: InodeTable) -> None:
         _reset_counter()
         inode_table = get_setup
         path = "/file.txt/docs"
         with pytest.raises(NotADirectoryError):
-            error_node = resolve(path, inode_table)
+            resolve(path, inode_table)
