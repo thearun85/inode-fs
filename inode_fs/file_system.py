@@ -22,3 +22,9 @@ class FileSystem:
             self.inode_table.add(new_dir_inode)
         else:
             raise AlreadyExistsError(f"[inode-fs]Path {path} already exists")
+    def ls(self, path: str) -> list[str]:
+        path_inode = resolve(path, self.inode_table)
+        if isinstance(path_inode, DirInode):
+            return list(path_inode.entries.keys())
+        else:
+            raise NotADirectoryError(f"[inode-fs] Path {path} is not a directory")
